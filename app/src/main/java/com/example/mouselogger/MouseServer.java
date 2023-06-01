@@ -9,15 +9,15 @@ public class MouseServer extends NanoHTTPD {
     private String mouseCoordinates = "";;
 
     public MouseServer() {
-        super(8888); // port to listen on
-     //   mouseCoordinates = "No coordinates received yet"; // Default value
+        super(8888);
     }
 
     @Override
     public Response serve(IHTTPSession session) {
 
-        String htmlResponse = "<html><body><h1>Mouse Coordinates:</h1><p>"
-        + mouseCoordinates + "</p></body></html>";
+        String htmlResponse = "<html><body><h1>Mouse Coordinates:</h1><div id=\"scrollTarget\">"
+        + mouseCoordinates + "</div><script>setTimeout( () => { location.reload(); }, 3000); " +
+                "setTimeout( () => { window.scrollTo(0, document.body.scrollHeight); }, 2500);</script></body></html>";
         return newFixedLengthResponse(Response.Status.OK, NanoHTTPD.MIME_HTML, htmlResponse);
     }
 

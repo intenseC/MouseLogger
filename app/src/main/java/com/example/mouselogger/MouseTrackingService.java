@@ -23,8 +23,7 @@ import android.view.WindowManager;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import java.io.IOException;
-//  import  com.example.mouselogger.MouseServer;
-//  import fi.iki.elonen.NanoHTTPD;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -33,8 +32,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-//===========================================================================
+
+
 public class MouseTrackingService extends Service {
     private static final int NOTIFICATION_ID = 1;
     private WindowManager windowManager;
@@ -43,7 +42,7 @@ public class MouseTrackingService extends Service {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
-//    final int REQUEST_CODE_OVERLAY_PERMISSION = 107;
+
 
     private void addWindow() {
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -52,13 +51,12 @@ public class MouseTrackingService extends Service {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
-//                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
         );
 
- //       windowManager.addView(rootView, params);
+
     }
 
     private void chkWindow() {
@@ -75,10 +73,10 @@ public class MouseTrackingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Create and display a notification for the foreground service
+
         Notification notification = createNotification();
         startForeground(NOTIFICATION_ID, notification);
-       // Log.i("MM>>>>>>>>>>MM", "openBrowser");
+
         try {
         mouseServer.start();
         openBrowser("http://127.0.0.1:8888/coords");
@@ -90,7 +88,7 @@ public class MouseTrackingService extends Service {
         return START_STICKY;
     }
     private Notification createNotification() {
-        // Create a notification channel for Android Oreo and above
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("ForegroundServiceChannel",
                     "Foreground Service Channel", NotificationManager.IMPORTANCE_DEFAULT);
@@ -98,21 +96,16 @@ public class MouseTrackingService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Create the notification builder
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "ForegroundServiceChannel")
                 .setContentTitle("Mouse Tracking Service")
                 .setContentText("Tracking mouse events")
-                //.setSmallIcon(R.drawable.notification_icon)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        // Create the pending intent for when the notification is clicked
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        // Set the pending intent to the notification
         builder.setContentIntent(pendingIntent);
-
-        // Build and return the notification
         return builder.build();
     }
 
@@ -124,7 +117,6 @@ public class MouseTrackingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopMouseTracking();
         mouseServer.stop();
         if (windowManager != null && rootView != null) {
             windowManager.removeView(rootView);
@@ -139,48 +131,38 @@ public class MouseTrackingService extends Service {
                     float x = event.getX();
                     float y = event.getY();
                     sendMouseCoordinates(x, y);
-                    // Handle the mouse cursor coordinates (x, y) here
-                    // You can perform any necessary actions based on the cursor position
-                    return true; // Return true to indicate that the event is consumed
+                    return true;
                 }
-                return false; // Return false if the event is not consumed
+                return false;
             }
         });
     }
 
-    private void stopMouseTracking() {
-        // Clean up any resources related to mouse tracking
-    }
+
 
     private void sendMouseCoordinates(float x, float y) {
         OkHttpClient client = new OkHttpClient();
 
-        // Build the request body with the mouse coordinates
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("x", String.valueOf(x))
                 .add("y", String.valueOf(y));
         RequestBody requestBody = formBuilder.build();
 
-        // Build the HTTP POST request
         Request request = new Request.Builder()
                 .url("http://127.0.0.1:8888/coords")
                 .post(requestBody)
                 .build();
-
-        // Send the HTTP request asynchronously
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                // Handle request failure
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                // Handle request success
+
                 if (response.isSuccessful()) {
                     String responseData = response.body().string();
-                    // Process the response if needed
                 }
             }
         });
@@ -188,7 +170,7 @@ public class MouseTrackingService extends Service {
     private void openBrowser(String url) {
         Uri webpage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Add this line to ensure the browser opens in a new task
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
@@ -201,12 +183,4 @@ public class MouseTrackingService extends Service {
     }
 
     private final IBinder binder = new LocalBinder();
-
-
-
-
-
 }
-
-//===========================================================================
-
