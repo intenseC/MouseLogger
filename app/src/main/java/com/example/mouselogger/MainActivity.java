@@ -27,9 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     final int REQUEST_CODE_PERMISSION = 1001;
-
     private MouseServer mouseServer;
     private webSocketServer webSocketServer;
+    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1010;
+    private static  int svcFlg = 0;
+    private ActivityResultLauncher<Intent> requestOverlayPermissionLauncher;
 
     private void UIprint(String dat) {
         TextView mouseDataTextView = findViewById(R.id.mouseDataTextView);
@@ -49,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
                     float x = event.getX();
                     float y = event.getY();
-                    sendCoordinatesToServer(x, y);
                     String dat = ">>  X: " +  String.valueOf(x) + " >>  Y: " + String.valueOf(y);
+                    mouseServer.setMouseCoordinates(dat);
                     webSocketServer.broadcast(dat);
                     UIprint(dat);
                     return true;
@@ -77,10 +79,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1010;
-    private static  int svcFlg = 0;
-    private ActivityResultLauncher<Intent> requestOverlayPermissionLauncher;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         webSocketServer = new webSocketServer(8889) {
             @Override
             public void onMessage(WebSocket conn, String message) {
-                // Handle incoming messages from websocket clients
                 UIprint(message);
             }
         };
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         svcFlg = 0; // comment to run the service
 
         if (svcFlg == 1)
-            startForegroundService(); // run the service
+            startForegroundService();
             svcFlg = 0;
 
         setSupportActionBar(binding.toolbar);
@@ -157,8 +154,4 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
-    private void sendCoordinatesToServer(float x, float y) {
-        String coordinates = "X = " + x + ", Y = " + y;
-        mouseServer.setMouseCoordinates(coordinates);
-    }
 }
