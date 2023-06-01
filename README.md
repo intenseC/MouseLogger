@@ -1,6 +1,9 @@
 # MouseLogger
 Android APP to track and log USB mouse.
 Logs are printed @ http://127.0.0.1:8888/coords
+//////////////////////////////////////////////////
+Installation and running:
+//////////////////////////////////////////////////
 
 Install Android Studio:
 
@@ -45,3 +48,5 @@ That's it! The MouseLogger app should now be running on your Android device or e
 
 Note: If you encounter any issues during the installation or running of the MouseLogger project,
 make sure to check the project's documentation or consult the project's README file for any specific instructions or troubleshooting steps.
+
+//////////////////////////////////////////////////
