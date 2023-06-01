@@ -14,7 +14,7 @@ Navigate to the directory where you want to clone the repository.
 Run the following command to clone the repository:
 
 
-git clone https://github.com/your-username/MouseLogger.git
+git clone https://github.com/intenseC/MouseLogger.git
 
 Replace "your-username" with your actual GitHub username.
 
