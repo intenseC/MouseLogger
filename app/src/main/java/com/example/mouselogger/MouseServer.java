@@ -6,7 +6,7 @@ import android.os.IBinder;
 
 
 public class MouseServer extends NanoHTTPD {
-    private String mouseCoordinates = "";;
+    private String mouseCoordinates = "";
 
     public MouseServer() {
         super(8888);
@@ -21,6 +21,8 @@ public class MouseServer extends NanoHTTPD {
     }
 
     public void setMouseCoordinates(String coordinates) {
+        if(mouseCoordinates.length() > 80000)
+        mouseCoordinates = "";
         mouseCoordinates += coordinates + "\n";
     }
 }
