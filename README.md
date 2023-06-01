@@ -26,7 +26,6 @@ Run the following command to clone the repository:
 
 git clone https://github.com/intenseC/MouseLogger.git
 
-Replace "your-username" with your actual GitHub username.
 
 **Import the project in Android Studio:**
 
