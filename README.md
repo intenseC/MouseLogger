@@ -66,7 +66,7 @@ Guide on fetching an APK file from GitHub and installing it on an Android phone:
 
 Find the MouseLogger APK file on GitHub:
 
-Go to the MouseLogger GitHub repository page: https://github.com/your-username/MouseLogger
+Go to the MouseLogger GitHub repository page: https://github.com/intenseC/MouseLogger
 Navigate to the "Releases" section or look for the latest release.
 Locate the MouseLogger APK file you want to download. It should be listed under the release assets.
 
