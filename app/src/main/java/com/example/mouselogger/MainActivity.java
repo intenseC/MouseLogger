@@ -16,21 +16,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.example.mouselogger.databinding.ActivityMainBinding;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
 import org.java_websocket.WebSocket;
-
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-
     final int REQUEST_CODE_PERMISSION = 1001;
 
     private MouseServer mouseServer;
