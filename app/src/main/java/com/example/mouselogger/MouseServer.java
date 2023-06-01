@@ -21,8 +21,9 @@ public class MouseServer extends NanoHTTPD {
     }
 
     public void setMouseCoordinates(String coordinates) {
-        if(mouseCoordinates.length() > 80000)
-        mouseCoordinates = "";
+        if(mouseCoordinates.length() > 80000) {
+            mouseCoordinates = "";
+        }
         mouseCoordinates += coordinates + "\n";
     }
 }
