@@ -14,7 +14,6 @@ public class MouseServer extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-
         String htmlResponse = "<html><body><h1>Mouse Coordinates:</h1><div id=\"scrollTarget\">"
         + mouseCoordinates + "</div><script>setTimeout( () => { location.reload(); }, 3000); " +
                 "setTimeout( () => { window.scrollTo(0, document.body.scrollHeight); }, 2500);</script></body></html>";

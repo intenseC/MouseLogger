@@ -123,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
         }
         svcFlg = 0; // comment to run the service
 
-        if (svcFlg == 1)
+        if (svcFlg == 1) {
             startForegroundService();
+        }
             svcFlg = 0;
 
         setSupportActionBar(binding.toolbar);

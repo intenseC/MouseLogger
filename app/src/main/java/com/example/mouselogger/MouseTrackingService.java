@@ -1,7 +1,5 @@
 package com.example.mouselogger;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,16 +12,13 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -59,16 +54,12 @@ public class MouseTrackingService extends Service {
 
     }
 
-    private void chkWindow() {
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
         addWindow();
         startMouseTracking();
         mouseServer = new MouseServer();
-        Log.i("MM>>>>>>>>>>MM", "MouseServer");
     }
 
     @Override
@@ -80,7 +71,6 @@ public class MouseTrackingService extends Service {
         try {
         mouseServer.start();
         openBrowser("http://127.0.0.1:8888/coords");
-            Log.i("MM>>>>>>>>>>MM", "openBrowser");
         } catch (IOException e) {
             Log.i("MM>>>>>>>>>>MM", String.valueOf(e));
             e.printStackTrace();
@@ -137,8 +127,6 @@ public class MouseTrackingService extends Service {
             }
         });
     }
-
-
 
     private void sendMouseCoordinates(float x, float y) {
         OkHttpClient client = new OkHttpClient();
