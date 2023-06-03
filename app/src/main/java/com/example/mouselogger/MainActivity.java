@@ -2,7 +2,9 @@ package com.example.mouselogger;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,9 +23,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import org.java_websocket.WebSocket;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 public class MainActivity extends AppCompatActivity {
+    public static  final String keystore_password = "qwerty";
+    public static KeyStore keyStore;
+    public static InputStream keyStoreInputStream;
+    public SSLContext sslContext;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     final int REQUEST_CODE_PERMISSION = 1001;
@@ -79,18 +101,104 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    private void getCert()  {
+        System.setProperty("javax.net.debug", "ssl");
+        Context context = getApplicationContext();
+        Resources resources = context.getResources();
+        InputStream inputStream = resources.openRawResource(R.raw.websock_certificate);
+//        try {
+//            webSocketServer = new webSocketServer(8889) {
+//                @Override
+//                public void onMessage(WebSocket conn, String message) {
+//                    UIprint(message);
+//                }
+//            };
+//        } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException |
+//                 UnrecoverableKeyException | KeyManagementException | NoSuchProviderException e) {
+//            throw new RuntimeException(e);
+//        }
+
+
+
+        try {
+
+            keyStore = KeyStore.getInstance("PKCS12");
+            keyStoreInputStream = resources.openRawResource(R.raw.websock_keystore);
+            keyStore.load(keyStoreInputStream, keystore_password.toCharArray());
+
+//        SSLContext sslContext = SSLContext.getInstance("TLS");
+//        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+//        keyManagerFactory.init(keyStore, "keystore_password".toCharArray());
+//        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+//        trustManagerFactory.init(keyStore);
+//        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
+//
+//
+//        webSocketServer.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+
+
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            //  test the certificate object
+            System.out.println("Certificate subject: " + certificate.getSubjectDN());
+            System.out.println("Certificate issuer: " + certificate.getIssuerDN());
+
+/*
+            // ...other operations with the certificate:
+
+            // Create a KeyStore containing the certificate
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("my_cert", certificate);
+
+            // Create a TrustManager that trusts the certificate in the KeyStore
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+            TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+
+            // Create an SSLContext and configure it with the TrustManager
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagers, null);
+*/
+
+
+//            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
+//            webSocketServer.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private void webServices() {
+
+
+//        for (Provider provider : Security.getProviders()) {
+//            System.out.println(provider.getName());
+//            for (String algorithm : provider.getServices().stream().map(Provider.Service::getAlgorithm).sorted().collect(Collectors.toList())) {
+//                System.out.println("- " + algorithm);
+//            }
+//        }
+
+
         mouseServer = new MouseServer();
         try {
-            mouseServer.start();
+        mouseServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         webSocketServer = new webSocketServer(8889) {
             @Override
@@ -98,7 +206,18 @@ public class MainActivity extends AppCompatActivity {
                 UIprint(message);
             }
         };
+//        getCert();
         webSocketServer.start();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        webServices();
+
 
 
         if (!Settings.canDrawOverlays(this)) {

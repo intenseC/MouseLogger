@@ -31,6 +31,9 @@ menu menu_main
 mipmap ic_launcher
 mipmap ic_launcher_round
 navigation nav_graph
+raw websock__keystore
+raw websock_certificate
+raw websock_keystore
 string action_settings
 string app_name
 string first_fragment_label

@@ -3768,6 +3768,9 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 navigation nav_graph
 plurals mtrl_badge_content_description
+raw websock__keystore
+raw websock_certificate
+raw websock_keystore
 string abc_action_bar_home_description
 string abc_action_bar_up_description
 string abc_action_menu_overflow_description
